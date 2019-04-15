@@ -1,0 +1,40 @@
+<databaseChangeLog
+	xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd
+    http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+
+	<changeSet id="criar_tb_funcionario" author="medial_server">
+		<preConditions onFail="CONTINUE">
+			<not>
+				<tableExists tableName="tb_funcionario" />
+			</not>
+		</preConditions>
+
+		<createTable tableName="tb_funcionario">
+			<column name="id_funcionario" type="number(6,0)"
+				remarks="CODIGO SEQUENCIAL DO FUNCIONÁRIO">
+				<constraints primaryKey="true" nullable="false"
+					primaryKeyName="pk_funcionario" />
+			</column>
+			<column name="tx_nome" type="varchar(30)"
+				remarks="NOME DO FUNCIONÁRIO">
+				<constraints nullable="false" />
+			</column>
+			<column name="tx_sobrenome" type="varchar(50)"
+				remarks="SOBRENOME DO FUNCIONÁRIO">
+				<constraints nullable="false" />
+			</column>
+			<column name="tx_email" type="email(255)"
+				remarks="EMAIL DO FUNCIONÁRIO">
+				<constraints nullable="false" />
+			</column>
+			<column name="nr_nis" type="number(15,0)"
+				remarks="NIS DO FUNCIONÁRIO">
+				<constraints nullable="false" />
+			</column>
+		</createTable>
+	</changeSet>
+</databaseChangeLog>
