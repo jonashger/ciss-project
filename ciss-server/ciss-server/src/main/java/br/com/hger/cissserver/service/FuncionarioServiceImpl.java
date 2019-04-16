@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 
 import br.com.hger.cissserver.dto.FuncionarioDTO;
 import br.com.hger.cissserver.dto.ValorBooleanoDTO;
@@ -12,6 +13,7 @@ import br.com.hger.cissserver.repository.FuncionarioRepository;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
+@Controller
 public class FuncionarioServiceImpl implements FuncionarioService {
 
 	@Autowired

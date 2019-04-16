@@ -2,16 +2,23 @@ package br.com.hger.cissserver.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import lombok.Data;
 
 @Entity
 @Table(name = "tb_funcionario")
+@SequenceGenerator(name = "gen_funcionario", sequenceName = "gen_funcionario", allocationSize = 1)
 @Data
 public class Funcionario {
 
+	@Id
 	@Column(name = "id_funcionario")
+	@GeneratedValue(generator = "gen_funcionario", strategy = GenerationType.IDENTITY)
 	private Long id;
 
 	@Column(name = "nr_nis")

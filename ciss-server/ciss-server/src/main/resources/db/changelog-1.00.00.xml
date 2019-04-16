@@ -27,7 +27,7 @@
 				remarks="SOBRENOME DO FUNCIONÁRIO">
 				<constraints nullable="false" />
 			</column>
-			<column name="tx_email" type="email(255)"
+			<column name="tx_email" type="varchar(255)"
 				remarks="EMAIL DO FUNCIONÁRIO">
 				<constraints nullable="false" />
 			</column>
@@ -36,5 +36,8 @@
 				<constraints nullable="false" />
 			</column>
 		</createTable>
+	</changeSet>
+	<changeSet id="criar_seq_funcionario" author="Jonas">
+		<createSequence sequenceName="gen_funcionario" startValue="1"/>
 	</changeSet>
 </databaseChangeLog>

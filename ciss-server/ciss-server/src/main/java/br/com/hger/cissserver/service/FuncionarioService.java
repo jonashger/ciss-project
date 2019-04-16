@@ -17,7 +17,7 @@ import br.com.hger.cissserver.dto.ValorBooleanoDTO;
 @RequestMapping("/funcionario")
 public interface FuncionarioService {
 
-	@PostMapping
+	@PostMapping(path = "/novo")
 	public abstract ValorBooleanoDTO novoFuncionario(@RequestBody FuncionarioDTO funcionarioDTO);
 
 	@PostMapping(path = "/{id}")
