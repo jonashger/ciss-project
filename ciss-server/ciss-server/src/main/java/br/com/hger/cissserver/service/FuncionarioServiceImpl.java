@@ -8,8 +8,11 @@ import org.springframework.stereotype.Controller;
 
 import br.com.hger.cissserver.dto.FuncionarioDTO;
 import br.com.hger.cissserver.dto.ValorBooleanoDTO;
+import br.com.hger.cissserver.exceptions.BadRequestException;
+import br.com.hger.cissserver.exceptions.MensagemServico;
 import br.com.hger.cissserver.model.Funcionario;
 import br.com.hger.cissserver.repository.FuncionarioRepository;
+import br.com.hger.cissserver.util.ValidadorUtil;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -26,9 +29,36 @@ public class FuncionarioServiceImpl implements FuncionarioService {
 	public ValorBooleanoDTO novoFuncionario(FuncionarioDTO funcionarioDTO) {
 		log.info("==> Rodando novoFuncionario.");
 
+		this.validarFuncionario(funcionarioDTO);
+
 		funcionarioRepository.save(modelMapper.map(funcionarioDTO, Funcionario.class));
 
 		return ValorBooleanoDTO.TRUE;
+	}
+
+	private void validarFuncionario(FuncionarioDTO funcionarioDTO) {
+
+		if (funcionarioDTO.getNome() == null || funcionarioDTO.getNome().length() < 2
+				|| funcionarioDTO.getNome().length() > 30) {
+			throw new BadRequestException(MensagemServico.NOME_INVALIDO);
+		}
+
+		if (funcionarioDTO.getSobrenome() == null || funcionarioDTO.getSobrenome().length() < 2
+				|| funcionarioDTO.getSobrenome().length() > 50) {
+			throw new BadRequestException(MensagemServico.SOBRENOME_INVALIDO);
+
+		}
+
+		if (funcionarioDTO.getEmail() == null || funcionarioDTO.getEmail().length() > 255
+				|| !ValidadorUtil.validarEmail(funcionarioDTO.getEmail())) {
+			throw new BadRequestException(MensagemServico.EMAIL_INVALIDO);
+
+		}
+		if (funcionarioDTO.getNis() == null) {
+			throw new BadRequestException(MensagemServico.NIS_NAO_INFORMADO);
+
+		}
+
 	}
 
 	@Override
