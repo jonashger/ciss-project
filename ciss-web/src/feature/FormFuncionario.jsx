@@ -29,14 +29,37 @@ export class FormFuncionario extends Component {
 
     constructor(props) {
         super(props);
-        this.state = { value: '' };
+        this.state = {
+            nomeError: 'invalid',
+            sobrenomeError: 'invalid',
+            emailError: 'invalid',
+            nisError: 'invalid',
+        };
 
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
     }
 
-    handleChange(field, event) {
-        this.setState({ [field]: event.target.value });
+    isEmail(email) {
+        var checkend = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/gi;
+        return (email.search(checkend) !== -1)
+    }
+
+    handleChange(field, event, type, min, max) {
+        const valor = event.target.value;
+        let error = false;
+        switch (type) {
+            case 'email':
+                error = !this.isEmail(valor)
+                break;
+            case 'text':
+                error = min && (valor.length < min || valor.length > max);
+                break;
+            default:
+                break;
+        }
+
+        this.setState({ [field]: event.target.value, [field + 'Error']: error ? 'invalid' : '' });
     }
 
     handleSubmit(event) {
@@ -47,7 +70,36 @@ export class FormFuncionario extends Component {
             nis: this.state.nis
         }
 
-        API.post('/funcionario/novo',data);
+        API.post('/funcionario/novo', data)
+            .then(res => {
+                if (res.data.valor) {
+                    this.setState({ nome: '', sobrenome: '', email: '', nis: '' })
+                }
+            }).catch(err => {
+                if (err.response.status === 400) {
+                    switch (err.response.data.message) {
+                        case 'NOME_INVALIDO':
+                            this.setState({ nomeError: 'invalid' })
+                            break;
+                        case 'SOBRENOME_INVALIDO':
+                            this.setState({ sobrenomeError: 'invalid' })
+
+                            break;
+                        case 'EMAIL_INVALIDO':
+                            this.setState({ emailError: 'invalid' })
+
+                            break;
+                        case 'NIS_NAO_INFORMADO':
+                            this.setState({ nisError: 'invalid' })
+
+                            break;
+
+                        default:
+                            break;
+                    }
+                }
+
+            });
         event.preventDefault();
     }
 
@@ -63,34 +115,47 @@ export class FormFuncionario extends Component {
                                 Nome
                         </InputLabel>
                             <Input
+                                value={this.state.nome}
                                 id="nome"
-                                onChange={(event) => this.handleChange("nome", event)}
+                                autoFocus
+                                required={true}
+                                error={this.state.nomeError === 'invalid'}
+                                onChange={(event) => this.handleChange('nome', event, 'text', 2, 30)}
                             />
                         </FormControl>
                         <FormControl className={classes.inputContainer}>
                             <InputLabel>
                                 Sobrenome
-                    </InputLabel>
+                            </InputLabel>
                             <Input
                                 id="sobrenome"
-                                onChange={(event) => this.handleChange("sobrenome", event)}
+                                value={this.state.sobrenome}
+                                error={this.state.sobrenomeError === 'invalid'}
+                                onChange={(event) => this.handleChange("sobrenome", event, 'text', 2, 50)}
                             />
                         </FormControl>
                         <FormControl className={classes.inputContainer}>
-                            <InputLabel>
+                            <InputLabel >
                                 Email
-                    </InputLabel>
+                            </InputLabel>
                             <Input
                                 id="email"
-                                onChange={(event) => this.handleChange("email", event)}
+                                required
+                                type='email'
+                                value={this.state.email}
+                                error={this.state.emailError === 'invalid'}
+                                onChange={(event) => this.handleChange("email", event, 'email')}
                             />
                         </FormControl>
                         <FormControl className={classes.inputContainer}>
                             <InputLabel>
                                 PIS/NIS
-                    </InputLabel>
+                             </InputLabel>
                             <Input
                                 id="nis"
+                                value={this.state.nis}
+                                type='number'
+                                error={this.state.nisError === 'invalid'}
                                 onChange={(event) => this.handleChange("nis", event)}
                             />
                         </FormControl>
