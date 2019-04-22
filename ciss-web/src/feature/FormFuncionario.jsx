@@ -19,9 +19,10 @@ const styles = ({
         width: '100%',
         marginTop: 25,
     },
-    buttonCadastrar: {
+    buttonActions: {
         marginTop: 25,
-        width: '50%'
+        width: '100%',
+        margin: '20px 0',
     }
 })
 
@@ -30,15 +31,38 @@ export class FormFuncionario extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            nomeError: 'invalid',
-            sobrenomeError: 'invalid',
-            emailError: 'invalid',
-            nisError: 'invalid',
+            id: '',
+            nomeError: '',
+            nome: '',
+            sobrenomeError: '',
+            sobrenome: '',
+            emailError: '',
+            email: '',
+            nisError: '',
+            nis: '',
         };
 
         this.handleChange = this.handleChange.bind(this);
-        this.handleSubmit = this.handleSubmit.bind(this);
+        this._handleSubmit = this._handleSubmit.bind(this);
+        this._openListagem = this._openListagem.bind(this);
     }
+
+    componentDidMount() {
+        if (this.props.match.params.id) {
+            API.get(`funcionario/${this.props.match.params.id}`).then(obj => {
+                const funcionario = obj.data;
+                this.setState({
+                    id: funcionario.id,
+                    nome: funcionario.nome,
+                    sobrenome: funcionario.sobrenome,
+                    nis: funcionario.nis,
+                    email: funcionario.email
+                });
+            })
+        }
+    }
+
+
 
     isEmail(email) {
         var checkend = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/gi;
@@ -62,7 +86,15 @@ export class FormFuncionario extends Component {
         this.setState({ [field]: event.target.value, [field + 'Error']: error ? 'invalid' : '' });
     }
 
-    handleSubmit(event) {
+
+    _openListagem() {
+        this.props.history.push('/funcionarios/');
+    }
+
+
+    _handleSubmit(event) {
+
+
         const data = {
             nome: this.state.nome,
             sobrenome: this.state.sobrenome,
@@ -70,10 +102,10 @@ export class FormFuncionario extends Component {
             nis: this.state.nis
         }
 
-        API.post('/funcionario/novo', data)
+        API.post(`/funcionario/${this.state.id}`, data)
             .then(res => {
                 if (res.data.valor) {
-                    this.setState({ nome: '', sobrenome: '', email: '', nis: '' })
+                    this.setState({ nome: '', sobrenome: '', email: '', nis: '', id: '' })
                 }
             }).catch(err => {
                 if (err.response.status === 400) {
@@ -110,7 +142,7 @@ export class FormFuncionario extends Component {
                 <div className={classes.container}>
                     <h2>Formulário de Cadastro</h2>
                     <Grid item xs={12} sm={6} lg={4} xl={3}>
-                        <FormControl className={classes.inputContainer}>
+                        <FormControl className={classes.inputContainer} fullWidth ={true}>
                             <InputLabel>
                                 Nome
                         </InputLabel>
@@ -159,7 +191,12 @@ export class FormFuncionario extends Component {
                                 onChange={(event) => this.handleChange("nis", event)}
                             />
                         </FormControl>
-                        <Button className={classes.buttonCadastrar} variant="contained" color="primary" type="submit" onClick={this.handleSubmit}>Cadastrar</Button>
+                        <Button className={classes.buttonActions} variant="contained" color="primary" type="submit" onClick={this._handleSubmit}>
+                            {this.state.id ? 'Alterar o Cadastro' : 'Cadastrar'}
+                        </Button>
+                        <Button className={classes.buttonActions} variant="contained" color="primary" onClick={this._openListagem}>
+                            Listar Funcionários
+                        </Button>
                     </Grid>
                 </div>
             </>

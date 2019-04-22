@@ -12,7 +12,8 @@ class App extends Component {
       <div>
         <Header/>
         <Route path="/" exact component={Index} />
-        <Route path="/cadastro/" component={FormFuncionario} />
+        <Route path="/cadastro/" component={FormFuncionario} exact={true}/>
+        <Route path="/cadastro/:id" component={FormFuncionario} />
         <Route path="/funcionarios/" component={Funcionarios} />
       </div>
     </Router>
