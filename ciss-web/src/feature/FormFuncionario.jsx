@@ -23,6 +23,12 @@ const styles = ({
         marginTop: 25,
         width: '100%',
         margin: '20px 0',
+    },
+    errorLabel: {
+        color: '#f13b37'
+    },
+    sucessLabel: {
+        color: '#24a85a'
     }
 })
 
@@ -40,6 +46,8 @@ export class FormFuncionario extends Component {
             email: '',
             nisError: '',
             nis: '',
+            status: '',
+            message: '',
         };
 
         this.handleChange = this.handleChange.bind(this);
@@ -83,7 +91,7 @@ export class FormFuncionario extends Component {
                 break;
         }
 
-        this.setState({ [field]: event.target.value, [field + 'Error']: error ? 'invalid' : '' });
+        this.setState({ [field]: event.target.value, [field + 'Error']: error ? 'invalid' : '', message: '' });
     }
 
 
@@ -105,9 +113,10 @@ export class FormFuncionario extends Component {
         API.post(`/funcionario/${this.state.id}`, data)
             .then(res => {
                 if (res.data.valor) {
-                    this.setState({ nome: '', sobrenome: '', email: '', nis: '', id: '' })
+                    this.setState({ nome: '', sobrenome: '', email: '', nis: '', id: '', message: 'Salvo com sucesso!', status: true })
                 }
             }).catch(err => {
+                this.setState({ message: 'Confira os campos inválidos!', status: false });
                 if (err.response.status === 400) {
                     switch (err.response.data.message) {
                         case 'NOME_INVALIDO':
@@ -142,7 +151,7 @@ export class FormFuncionario extends Component {
                 <div className={classes.container}>
                     <h2>Formulário de Cadastro</h2>
                     <Grid item xs={12} sm={6} lg={4} xl={3}>
-                        <FormControl className={classes.inputContainer} fullWidth ={true}>
+                        <FormControl className={classes.inputContainer} fullWidth={true}>
                             <InputLabel>
                                 Nome
                         </InputLabel>
@@ -191,12 +200,18 @@ export class FormFuncionario extends Component {
                                 onChange={(event) => this.handleChange("nis", event)}
                             />
                         </FormControl>
+
+                        {this.state.message ?
+                            <h4 className={this.state.status ? classes.sucessLabel : classes.errorLabel}>{this.state.message} </h4>
+                            : null}
+
                         <Button className={classes.buttonActions} variant="contained" color="primary" type="submit" onClick={this._handleSubmit}>
                             {this.state.id ? 'Alterar o Cadastro' : 'Cadastrar'}
                         </Button>
                         <Button className={classes.buttonActions} variant="contained" color="primary" onClick={this._openListagem}>
                             Listar Funcionários
                         </Button>
+
                     </Grid>
                 </div>
             </>

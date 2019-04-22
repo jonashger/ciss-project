@@ -38,7 +38,7 @@ function Header(props) {
                     <Typography variant="h6" color="inherit" className={classes.grow}>
                         Ciss
                     </Typography>
-                    <Link className={classes.link} to="/"> <Button className={[classes.button,classes.link].join(' ')}>Inicio</Button></Link>
+                    <Link className={classes.link} to="/"> <Button className={[classes.button,classes.link].join(' ')}>Início</Button></Link>
                     <Link className={classes.link} to="/cadastro" > <Button className={[classes.button,classes.link].join(' ')}>Cadastrar</Button></Link>
                     <Link className={classes.link} to="/funcionarios">  <Button className={[classes.button,classes.link].join(' ')}>Listagem</Button></Link>
                 </Toolbar>

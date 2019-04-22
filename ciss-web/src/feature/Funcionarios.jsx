@@ -3,6 +3,7 @@ import CustomTable from '../components/CustomTable';
 import { withStyles, Button, Grid } from '@material-ui/core';
 import API from '../core/http/API';
 import Edit from '@material-ui/icons/Edit';
+import Delete from '@material-ui/icons/Delete';
 
 
 const style = {
@@ -64,6 +65,12 @@ export class Funcionarios extends Component {
     });
   }
 
+  _excluirFuncionario(id) {
+    API.delete(`funcionario/${id}`).then(() => {
+      this.adquirirFuncionarios();
+    });
+  }
+
 
 
   dataToTableData = () => {
@@ -77,14 +84,15 @@ export class Funcionarios extends Component {
         element.sobrenome,
         element.email,
         element.nis,
-        this.botao(element.id)
+        this.botaoEditar(element.id),
+        this.botaoExcluir(element.id)
       ]])
     });
 
     return funcionariosRetorno;
   }
 
-  botao = funcionario => {
+  botaoEditar = funcionario => {
     const { classes } = this.props;
 
     return (
@@ -98,6 +106,21 @@ export class Funcionarios extends Component {
       </Button>
     );
   }
+  botaoExcluir = funcionario => {
+    const { classes } = this.props;
+
+    return (
+      <Button
+        color='secondary'
+        className={classes.actionButton + ' ' + classes.actionButtonRound}
+        key={funcionario.id}
+        onClick={() => this._excluirFuncionario(funcionario)}
+      >
+        <Delete className={classes.iconList} />
+      </Button>
+    );
+  }
+
 
   _editarFuncionario = (id) => {
     this.props.history.push(`/cadastro/${id}`);
@@ -119,20 +142,23 @@ export class Funcionarios extends Component {
               'Email',
               'Nis',
               'Editar',
+              'Excluir'
             ]}
             tableData={this.dataToTableData()}
             customCellClasses={[
               classes.center,
               classes.right,
-              classes.right
+              classes.center,
+              classes.center
             ]}
-            customClassesForCells={[0, 4, 5]}
+            customClassesForCells={[0, 4, 5, 6]}
             customHeadCellClasses={[
               classes.center,
               classes.right,
-              classes.right,
+              classes.center,
+              classes.center
             ]}
-            customHeadClassesForCells={[0, 4, 5]}
+            customHeadClassesForCells={[0, 4, 5, 6]}
             footer={true}
           />
         </Grid>
