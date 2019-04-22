@@ -17,12 +17,13 @@ import br.com.hger.cissserver.dto.ValorBooleanoDTO;
 @RequestMapping("/funcionario")
 public interface FuncionarioService {
 
-	@PostMapping(path = "/novo")
+	@PostMapping
 	public abstract ValorBooleanoDTO novoFuncionario(@RequestBody FuncionarioDTO funcionarioDTO);
 
 	@PostMapping(path = "/{id}")
 	public abstract ValorBooleanoDTO atualizaFuncionario(
-			@PathVariable(value = "id", required = true) Long codigoFuncionario, FuncionarioDTO funcionarioDTO);
+			@PathVariable(value = "id", required = true) Long codigoFuncionario,
+			@RequestBody FuncionarioDTO funcionarioDTO);
 
 	@DeleteMapping(path = "/{id}")
 	public abstract ValorBooleanoDTO deleteFuncionario(
@@ -31,4 +32,7 @@ public interface FuncionarioService {
 	@GetMapping(path = "/all")
 	public abstract List<FuncionarioDTO> adquirirFuncionarios();
 
+	@GetMapping("/{id}")
+	public abstract FuncionarioDTO adquirirFuncionario(
+			@PathVariable(value = "id", required = true) Long codigoFuncionario);
 }

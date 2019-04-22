@@ -1,6 +1,7 @@
 package br.com.hger.cissserver.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,6 +66,8 @@ public class FuncionarioServiceImpl implements FuncionarioService {
 	public ValorBooleanoDTO atualizaFuncionario(Long codigoFuncionario, FuncionarioDTO funcionarioDTO) {
 		log.info("==> Rodando atualizaFuncionario.");
 
+		this.validarFuncionario(funcionarioDTO);
+
 		Funcionario funcionario = modelMapper.map(funcionarioDTO, Funcionario.class);
 		funcionario.setId(codigoFuncionario);
 
@@ -86,7 +89,20 @@ public class FuncionarioServiceImpl implements FuncionarioService {
 	public List<FuncionarioDTO> adquirirFuncionarios() {
 		log.info("==> Rodando adquirirFuncionarios.");
 
-		return modelMapper.map(funcionarioRepository.findAll(), List.class);
+		return modelMapper.map(funcionarioRepository.findAllByOrderByIdAsc(), List.class);
+	}
+
+	@Override
+	public FuncionarioDTO adquirirFuncionario(Long codigoFuncionario) {
+		log.info("==> Rodando adquirirFuncionarios.");
+
+		Optional<Funcionario> funcionarioOptional = funcionarioRepository.findById(codigoFuncionario);
+		if (funcionarioOptional.isPresent()) {
+			return modelMapper.map(funcionarioOptional.get(), FuncionarioDTO.class);
+		}
+
+		return null;
+
 	}
 
 }
