@@ -1,5 +1,6 @@
 package br.com.hger.cissserver.service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -32,10 +33,19 @@ public class FuncionarioServiceImpl implements FuncionarioService {
 
 		this.validarFuncionario(funcionarioDTO);
 
-		funcionarioRepository.save(modelMapper.map(funcionarioDTO, Funcionario.class));
+		Funcionario funcionario = modelMapper.map(funcionarioDTO, Funcionario.class);
+		funcionario.setDataCadastro(new Date());
+		funcionario.setDataManutencao(new Date());
+		funcionarioRepository.save(funcionario);
 
 		return ValorBooleanoDTO.TRUE;
 	}
+
+	/**
+	 * valida nome, sobrenome, email e nis do funcionario
+	 * 
+	 * @param funcionarioDTO objeto a ser validado
+	 */
 
 	private void validarFuncionario(FuncionarioDTO funcionarioDTO) {
 
@@ -68,12 +78,24 @@ public class FuncionarioServiceImpl implements FuncionarioService {
 
 		this.validarFuncionario(funcionarioDTO);
 
-		Funcionario funcionario = modelMapper.map(funcionarioDTO, Funcionario.class);
-		funcionario.setId(codigoFuncionario);
+		Optional<Funcionario> funcionarioOpt = funcionarioRepository.findById(codigoFuncionario);
 
-		funcionarioRepository.save(funcionario);
+		if (funcionarioOpt.isPresent()) {
 
-		return ValorBooleanoDTO.TRUE;
+			Funcionario funcionario = funcionarioOpt.get();
+
+			funcionario.setDataManutencao(new Date());
+			funcionario.setEmail(funcionarioDTO.getEmail());
+			funcionario.setNis(funcionarioDTO.getNis());
+			funcionario.setNome(funcionarioDTO.getNome());
+			funcionario.setSobrenome(funcionarioDTO.getSobrenome());
+
+			funcionarioRepository.save(funcionario);
+
+			return ValorBooleanoDTO.TRUE;
+		}
+
+		return ValorBooleanoDTO.FALSE;
 	}
 
 	@Override

@@ -37,7 +37,24 @@
 			</column>
 		</createTable>
 	</changeSet>
+	
 	<changeSet id="criar_seq_funcionario" author="Jonas">
+		<preConditions onFail="CONTINUE">
+			<tableExists tableName="tb_funcionario" />
+		</preConditions>
 		<createSequence sequenceName="gen_funcionario" startValue="1"/>
 	</changeSet>
+	
+	<changeSet id="criar_dt_funcionario" author="Jonas">
+		<preConditions onFail="CONTINUE">
+			<tableExists tableName="tb_funcionario" />
+		</preConditions>
+		<addColumn tableName="tb_funcionario">
+			<column name="dt_cadastro" type="timestamp" defaultValue="now()" remarks="DATA EM QUE O REGISTRO FOI SALVO"></column>
+	    	<column name="dt_manutencao" type="timestamp" defaultValue="now()" remarks="DATA EM QUE O REGISTRO FOI ALTERADO"></column>
+		</addColumn>
+	</changeSet>
+	
+	
+	
 </databaseChangeLog>
