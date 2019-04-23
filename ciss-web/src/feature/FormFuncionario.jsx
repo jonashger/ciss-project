@@ -116,8 +116,9 @@ export class FormFuncionario extends Component {
                     this.setState({ nome: '', sobrenome: '', email: '', nis: '', id: '', message: 'Salvo com sucesso!', status: true })
                 }
             }).catch(err => {
-                this.setState({ message: 'Confira os campos inválidos!', status: false });
-                if (err.response.status === 400) {
+
+                if (err.response && err.response.status === 400) {
+                    this.setState({ message: 'Confira os campos inválidos!', status: false });
                     switch (err.response.data.message) {
                         case 'NOME_INVALIDO':
                             this.setState({ nomeError: 'invalid' })
@@ -138,6 +139,9 @@ export class FormFuncionario extends Component {
                         default:
                             break;
                     }
+                } else {
+                    this.setState({ message: 'Sem conexão com o servidor!', status: false });
+
                 }
 
             });
